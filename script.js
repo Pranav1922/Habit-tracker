@@ -523,51 +523,42 @@ function getCategoryLabel(category) {
       return '';
   }
 }
+//to add the clock face
+const clockFaces = document.getElementById('clock-face');
+    for (let i = 1; i <= 12; i++) {
+      const angle = (i-3) * 30 * (Math.PI / 180); // Rotate -90 degrees to start from top
+      const radius = 65;
+      const x = 72 + radius * Math.cos(angle); // 72 is centerX
+      const y = 73 + radius * Math.sin(angle); // 73 is centerY
 
-// Clock functions
-function updateClock() {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
-  
-  // Calculate angles for clock hands
-  const secondAngle = seconds * 6; // 360 degrees / 60 seconds = 6 degrees per second
-  const minuteAngle = minutes * 6 + seconds * 0.1; // 360 degrees / 60 minutes = 6 degrees per minute + slight movement from seconds
-  const hourAngle = (hours % 12) * 30 + minutes * 0.5; // 360 degrees / 12 hours = 30 degrees per hour + slight movement from minutes
-  
-  // Apply rotation to hands
-  secondHand.setAttribute('transform', `rotate(${secondAngle} 50 50)`);
-  minuteHand.setAttribute('transform', `rotate(${minuteAngle} 50 50)`);
-  hourHand.setAttribute('transform', `rotate(${hourAngle} 50 50)`);
-  
-  // Update digital time
-  let ampm = hours >= 12 ? 'PM' : 'AM';
-  let hours12 = hours % 12 || 12;
-  let minutesStr = minutes < 10 ? '0' + minutes : minutes;
-  let secondsStr = seconds < 10 ? '0' + seconds : seconds;
-  
-  digitalTimeElement.textContent = `${hours12}:${minutesStr}:${secondsStr} ${ampm}`;
-}
+      const number = document.createElement('div');
+      number.className = 'number';
+      number.style.left = `${x}px`;
+      number.style.top = `${y}px`;
+      number.textContent = i;
+      clockFaces.appendChild(number);
+    }
+//function to update the clock
+ function updateClock() {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours();
 
-function createClockMarkers() {
-  // Create hour markers (12 lines)
-  for (let i = 0; i < 12; i++) {
-    const angle = i * 30; // 360 degrees / 12 hours = 30 degrees per hour
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('class', 'time-marker-hour');
-    line.setAttribute('x1', '50');
-    line.setAttribute('y1', '10');
-    line.setAttribute('x2', '50');
-    line.setAttribute('y2', '15');
-    line.setAttribute('transform', `rotate(${angle} 50 50)`);
-    line.setAttribute('stroke', '#666');
-    line.setAttribute('stroke-width', '2');
-    
-    clockFace.appendChild(line);
-  }
-}
+      const secondDeg = seconds * 6;
+      const minuteDeg = minutes * 6 + seconds * 0.1;
+      const hourDeg = (hours % 12) * 30 + minutes * 0.5;
 
+      document.getElementById('second-hand').style.transform = `rotate(${secondDeg}deg)`;
+      document.getElementById('minute-hand').style.transform = `rotate(${minuteDeg}deg)`;
+      document.getElementById('hour-hand').style.transform = `rotate(${hourDeg}deg)`;
+
+      const digitalTime = now.toLocaleTimeString();
+      document.getElementById('digital-time').textContent = digitalTime;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
 // Initialize the application
 function init() {
   // Load data from localStorage
